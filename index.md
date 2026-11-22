@@ -22,7 +22,7 @@ you may notice it looks kind of familiar, that's because it is! it's designed to
 
 ## okkkkk, what's an fpga??
 
-fpga stands for Fully Programmable Gate Array, which means its got loads (1000s) of logic gates on it (like AND, NOT, OR, etc...) and you can decide how they are wired together. normally,
+fpga stands for Field Programmable Gate Array, which means its got loads (1000s) of logic gates on it (like AND, NOT, OR, etc...) and you can decide how they are wired together. normally,
 to do this yourself you'd need so many physical chips and run wires between them, so an FPGA means you can easily do so much more, and you can change the wiring instantly at your will.
 
 real uses for this include digital audio mixers (like [the one my school has](https://www.allen-heath.com/hardware/qu/qu-5-qu-5d/)!) 
@@ -62,4 +62,4 @@ else branches are important in verilog, otherwise the value either won't change 
 
 ## snake
 
-to actually make
+to actually make my game, I created a big array of registers that can store the different cells of the snake.
