@@ -26,7 +26,7 @@ fpga stands for Field Programmable Gate Array, which means its got loads (1000s)
 to do this yourself you'd need so many physical chips and run wires between them, so an FPGA means you can easily do so much more, and you can change the wiring instantly at your will.
 
 real uses for this include digital audio mixers (like [the one my school has](https://www.allen-heath.com/hardware/qu/qu-5-qu-5d/)!) 
-here's a [cool article](https://support.allen-heath.com/hc/en-gb/articles/37281423483665-XCVI-a-signal-processing-revolution-from-DSP-to-FPGA) about FPGAs in digital mixers
+here's a [cool article](https://support.allen-heath.com/hc/en-gb/articles/37281423483665-XCVI-a-signal-processing-revolution-from-DSP-to-FPGA) about FPGAs in digital mixers. also aviation, space, and phone towers
 
 ---
 
@@ -62,4 +62,10 @@ else branches are important in verilog, otherwise the value either won't change 
 
 ## snake
 
-to actually make my game, i created a big array of registers that can store the different cells of the snake. this caused a problem though, because i had done it as `reg snake [127:0] [7:0]` which gave me an XML error in vga playground which wasn't helpful. turns out the right way is `reg [7:0] snake [127:0]`
+to actually make my game, i created a big array of registers that can store the different cells of the snake. this caused a problem though, because i had done it as `reg snake [127:0] [7:0]` which gave me an XML error in vga playground which wasn't helpful. turns out the right way is `reg [7:0] snake [127:0]`. vga playground isn't great at error handling and reporting, so i'd suggest trying to compile locally to get a helpful error description, or push to github and use the github actions logs.
+
+Here's the main logic that snake runs on
+
+every few clock cycles (determined with an always block clocked on the rising edge of 1 bit of the counter), the new head position is calculated by adding or subtracting from one of the x or y of the current head.
+
+then, the snake body pieces are all moved along by 1, discarding the one at the end and 
