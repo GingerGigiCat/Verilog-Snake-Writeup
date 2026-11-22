@@ -64,8 +64,11 @@ else branches are important in verilog, otherwise the value either won't change 
 
 to actually make my game, i created a big array of registers that can store the different cells of the snake. this caused a problem though, because i had done it as `reg snake [127:0] [7:0]` which gave me an XML error in vga playground which wasn't helpful. turns out the right way is `reg [7:0] snake [127:0]`. vga playground isn't great at error handling and reporting, so i'd suggest trying to compile locally to get a helpful error description, or push to github and use the github actions logs.
 
-Here's the main logic that snake runs on
+---
 
-every few clock cycles (determined with an always block clocked on the rising edge of 1 bit of the counter), the new head position is calculated by adding or subtracting from one of the x or y of the current head.
+here's the main logic that my snake runs on
 
-then, the snake body pieces are all moved along by 1, discarding the one at the end and 
+every few clock cycles (determined with an always block clocked on the rising edge of 1 bit of the counter), the new head position is calculated by adding or subtracting from one of the x or y of the current head. it checks if the new head is equal to the current food position
+
+then, the snake body pieces are all moved along by 1, discarding the one at the end and setting the first place to the new head. below is a diagram! while this happens, it also checks if the new head is equal to the body piece it's currently moving which would mean the snake has hit itself, and if it is the game ends.
+
