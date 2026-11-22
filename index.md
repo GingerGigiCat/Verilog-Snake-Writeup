@@ -62,4 +62,4 @@ else branches are important in verilog, otherwise the value either won't change 
 
 ## snake
 
-to actually make my game, I created a big array of registers that can store the different cells of the snake.
+to actually make my game, i created a big array of registers that can store the different cells of the snake. this caused a problem though, because i had done it as `reg snake [127:0] [7:0]` which gave me an XML error in vga playground which wasn't helpful. turns out the right way is `reg [7:0] snake [127:0]`
