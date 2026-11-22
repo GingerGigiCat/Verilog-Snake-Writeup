@@ -1,3 +1,8 @@
+---
+title: Verilog Snake
+permalink: /
+---
+
 # hey! it's writeup time
 
 this is the story of the pain i endured to make a project for hack club's [asic](https://asic.hackclub.com) ysws, strap in tight because it's about to get pretty writeuppy in here. 
