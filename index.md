@@ -45,3 +45,10 @@ can express a circuit at a higher level. it all gets compiled down to logic gate
 - clocked (`always @(posedge clk)`) which means the circuit is only triggered at the rising edge of every clock cycle.
 
 i started to learn verilog by using [the HDLBits problem set](https://hdlbits.01xz.net/wiki/Step_one)
+
+by the time i got to [More Verilog Features/Reduction Operators](https://hdlbits.01xz.net/wiki/Reduction), i decided it was time to use my limited knowledge of the language in practice, and moved to [VGA playground](https://vga-playground.com/), which is a website where you can write verilog that makes a VGA output, and it gives you a visualisation of it.
+
+## vga playground
+
+at first, i was just messing around with the inputs, trying to figure out how it works and how it decides to draw what where. (sidenote: if you're making something in VGA playground, please please make sure to frequently press the download button, because the site clears anything you've written any time the page reloads.)
+
