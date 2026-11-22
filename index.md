@@ -50,5 +50,16 @@ by the time i got to [More Verilog Features/Reduction Operators](https://hdlbits
 
 ## vga playground
 
-at first, i was just messing around with the inputs, trying to figure out how it works and how it decides to draw what where. (sidenote: if you're making something in VGA playground, please please make sure to frequently press the download button, because the site clears anything you've written any time the page reloads.)
+![](assets/vga-playground1.png)
 
+at first, i was just messing around with the inputs, trying to figure out how it works and how it decides to draw what where. (sidenote: if you're making something in vga playground, please please make sure to frequently press the download button, because the site clears anything you've written any time the page reloads. i made this mistake numerous times, and while i guess it was a good learning opportunity to have to try and recall and redo what i had done previously, it was not fun)
+
+the default demo project, stripes, has three main outputs you'll want to use, R, G, and B, which as you may have guessed, correspond to red green and blue. "but these aren't pixels, how do i output a picture??" you ask
+
+that's done by timing when rgb are turned on or off to match where the "scan lines" currently are. this is done by comparing the values of pix_x and pix_y to where you want to draw, and setting the colours at the moment you want it to be drawn. say you wanted a red dot at (0, 0), you would check if pix_x == 0 and pix_y == 0, if true set R to 11 (the most red), G 00, B00, or otherwise set R 00, G 00, B 00. 
+
+else branches are important in verilog, otherwise the value either won't change or could be undefined (x) which is bad and painful, i'll get on to this in more depth at a later point.
+
+## snake
+
+to actually make
