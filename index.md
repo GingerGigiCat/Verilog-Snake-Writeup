@@ -72,3 +72,8 @@ every few clock cycles (determined with an always block clocked on the rising ed
 
 then, the snake body pieces are all moved along by 1, discarding the one at the end and setting the first place to the new head. below is a diagram! while this happens, it also checks if the new head is equal to the body piece it's currently moving which would mean the snake has hit itself, and if it is the game ends.
 
+---
+
+here's how it draws the snake
+
+the x bits and y bits of the snake body pieces are compared every clock cycle with the 
