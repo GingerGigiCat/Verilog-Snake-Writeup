@@ -68,12 +68,14 @@ to actually make my game, i created a big array of registers that can store the 
 
 here's the main logic that my snake runs on
 
-every few clock cycles (determined with an always block clocked on the rising edge of 1 bit of the counter), the new head position is calculated by adding or subtracting from one of the x or y of the current head. it checks if the new head is equal to the current food position
+every few clock cycles (determined with an always block clocked on the rising edge of 1 bit of the counter), the new head position is calculated by adding or subtracting from one of the x or y of the current head. it checks if the new head is equal to the current food position, and if it is, the length is increased by 1 and the food position is set to a random position, which may be a position on the snake body because I didn't feel like checking to make sure it's not. the way i generated a random number was just a pseudo random using random bits from the counter. it's a pretty good random because the counter is normally at a different point every time because it takes a different amount of time to travel and get between foods
 
 then, the snake body pieces are all moved along by 1, discarding the one at the end and setting the first place to the new head. below is a diagram! while this happens, it also checks if the new head is equal to the body piece it's currently moving which would mean the snake has hit itself, and if it is the game ends.
+
+![body movement diagram](assets/snake-diagram.jpg)
 
 ---
 
 here's how it draws the snake
 
-the x bits and y bits of the snake body pieces are compared every clock cycle with the 
+the x bits and y bits of the snake body pieces are compared every clock cycle with the 3 largest bits of pix_x and pix_y. If they are equal, green is drawn there (or grey if the snake has died), and if not, black is drawn. the same is done for the food except red is drawn. 
