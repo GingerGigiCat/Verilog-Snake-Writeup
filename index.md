@@ -82,7 +82,38 @@ the x bits and y bits of the snake body pieces are compared every clock cycle wi
 
 ---
 
-## suffering
+# suffering
+
+<img src="assets/sog.jpg" height = 400px>
 
 hhhhhgg]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]
 
+yay! so i finished my project! it works and the snake is snakey!
+
+loud incorrect buzzer
+
+i then cloned [this template](https://github.com/TinyTapeout/ttgf-verilog-template) by pressing use this template, and put my verilog files in /src. it's useful to have this locally too.
+
+i edited docs/info.md to describe my project
+
+i then edited info.yaml, to set top_module to my module's name, source_files, title, author, description and pins. for VGA, that's
+
+```yaml
+  # Outputs
+  uo[0]: "R1"
+  uo[1]: "G1"
+  uo[2]: "B1"
+  uo[3]: "VSync"
+  uo[4]: "R0"
+  uo[5]: "G0"
+  uo[6]: "B0"
+  uo[7]: "HSync"
+```
+
+not too bad so far, but it wasn't obvious either, and definitely not the "Submitting is quite simple" that https://asic.hackclub.com/submission promised.
+
+but wait there's more
+
+## tests
+
+i asked myself "why 
