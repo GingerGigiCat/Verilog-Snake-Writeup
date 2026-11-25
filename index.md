@@ -114,6 +114,65 @@ not too bad so far, but it wasn't obvious either, and definitely not the "Submit
 
 but wait there's more
 
+oh no
+
 ## tests
 
-i asked myself "why 
+i asked myself "what's the point in writing tests if i can see that it works??"
+
+turns out, VGA playground is way too forgiving compared to a real chip, and you don't want to be forgiven because a bad chip won't forgive you. more on that later...
+
+the repo comes with a handy folder called test. in this, is a test.py file which uses something called cocotb. don't ask me, i still don't know what it means, but what it does is it runs the logic of your design and lets you wait for logic events to happen, like counting how many clock cycles it takes for a signal to go high. it sounds rudimentary, but it's actually kind of useful. whilst it's hard to test exactly what your vga program is going to look like when it runs and how it's going to act, it's easy to check that the VGA timings are correct. 
+
+here's the test code i wrote, with some extra comments for you
+
+```py
+    # check vga timings
+    dut._log.info("Waiting hsync rise") # dut stands for device under test by the way, and it means the module that you're testing. cocotb can access internal wires and registers, but it's best practice to test the outputs only, because it doesn't matter what's going on inside the chip if what's coming out is wrong.
+    await RisingEdge(dut.hsync) # waits for the hsync signal to rise and fall once, this means it won't get caught in the middle of a cycle and count the wrong number
+    dut._log.info("Waiting hsync fall")
+    await FallingEdge(dut.hsync)
+    clock_count = 0
+    while True:
+        dut._log.info("Waiting clock rise")
+        await RisingEdge(dut.clk) # wait for the clock to rise so it can then check if hsync is 1
+        if dut.hsync.value == 1:
+            dut._log.info("Breaking because hsync 1")
+            break
+        clock_count += 1
+        dut._log.info(f"Clock count {clock_count}")
+
+    assert clock_count == 96 # this means you're making the assertion that the clock count should be 96 (based on vga timings). if it's not, an error is raised.
+    dut._log.info("Waiting vsync rise") # idk this bit's basically the same except vsync
+    await RisingEdge(dut.vsync)  # vsync
+    dut._log.info("Waiting vsync fall")
+    await FallingEdge(dut.vsync)
+    clock_count = 0
+    while True:
+        dut._log.info("Waiting hsync fall")
+        await FallingEdge(dut.hsync)
+        if dut.vsync.value == 1:
+            dut._log.info("breaking because vsync is 1")
+            break
+        clock_count += 1
+        dut._log.info(f"clock count {clock_count}")
+
+    assert clock_count == 2
+```
+
+and it runs locally with `make` in /test yay, easy right?
+
+wrong (again)
+
+i then uploaded it. but gds failed. 
+
+gds is the github action that generates the chip layout, you can think of it as compiling. it complained it the logs that the tile usage was at 377%. turns out, big arrays of registers and big for loops are big.
+
+i started by reducing the length of the array, so there's a shorter maximum snake length, which helped, but i needed to reduce the grid size from 16x16 to a measly 8x8 to get enough improvement to matter. 
+
+i now realise i could have just increased the number of tiles to use, but oh well. 
+
+even though i got it to 92% at one point, it still failed with error "detailed placement failed". i think this is because yeah there's space for all the gates to exist, but not enough space to wire them up to each other.
+
+yes, eventually i got it down to around 67% (six seven)
+
