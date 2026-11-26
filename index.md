@@ -166,7 +166,7 @@ wrong (again)
 
 i then uploaded it. but gds failed. 
 
-gds is the github action that generates the chip layout, you can think of it as compiling. it complained it the logs that the tile usage was at 377%. turns out, big arrays of registers and big for loops are big.
+gds is the github action that generates the chip layout, you can think of it as compiling. it complained in the logs that the tile usage was at 377%. turns out, big arrays of registers and big for loops are big.
 
 i started by reducing the length of the array, so there's a shorter maximum snake length, which helped, but i needed to reduce the grid size from 16x16 to a measly 8x8 to get enough improvement to matter. 
 
@@ -180,4 +180,28 @@ i then realised i was using = instead of <= in my clocked always logic. i don't 
 
 verilog doesn't like it when you leave registers uninitialised. easy fix right, just put an = after you initialise it right? wrong. in the always logic where you use it, you need a check to see if rst_n is 0, which is used to reset the logic and is done at startup to intialise values. if you don't do that, the logic fails as the unintialised values can't be used in operations because they are randomly 1 or 0, so tests fail. ok, so I added that to the clocked loop. but i have two always blocks, one triggered on the clock and one triggered on a bit of the counter. so i had to only put the reset logic on the ones where i'm using it, otherwise i get a multidriven error which is where a value is controlled by two different loops.
 
-you know that vga timings test i wrote that worked? well it didn't on github actions. in fact, it didn't even fail, it just got stuck for 6 hours and then timed out. after adding log messages, i found that 
+you know that vga timings test i wrote that worked? well it didn't on github actions. in fact, it didn't even fail, it just got stuck for 6 hours and then timed out. after adding log messages, i found that the hsync was fine, but it was getting stuck at vsync. whar? I thought it must have been my code that was the problem, because obviously the vga timings code FROM TINYTAPEOUT wouldn't be the problem?? surely????
+
+i asked in the tinytapeout discord server, they were pretty helpful but i needed claude to decode what they were telling me to do. apparently i had to 
+
+"run the GL simulation locally (for a fixed account of time for instance) and look at the waveform. This is a bit tricky for GL simulations, since you mostly see FFs (and the top level inputs/outputs), and they're not always named like you would think. But it can still give a clue to what's happening."
+
+GL stands for Gate Level. as it turns out, the test i had been running locally was kind of like interpreting verilog, not compiling it. it should work in theory, but in practice the "compiler" changes some things in some mind-numbing ways. so i installed GTKWave, and downloaded `tt_submission` from the gds artifacts on the github action. inside was a .v file with the name of my top module, which i copied to test/gate_level_netlist.v
+
+i also had to do `pip install ciel` and `ciel enable --pdk-family gf180mcu 54435919abffb937387ec956209f9cf5fd2dfbee` to get some things the gate level simulation needs. the long code starting with 54435 is the hash from the CI log, because the gate level sim needs to use the same version as github actions. 
+
+i could then run `PDK_ROOT=~/.ciel PDK=gf180mcuD GATES=yes make` to run make but at gate level. i waited for it to get stuck, and then opened the tb.fst file with gtkwave. it starts ridiculously zoomed in and without any actual logic gates shown. select user_projects on the left, then add wires or registers you want to see in the panel below that on the left, then zoom out to something sensible using the - button in the top left. 
+
+![gtkwave](assets/gtkwave1.png)
+
+it starts ok, but gets worse over time, as red means not initialised, but surely if vsync was initialised at the beginning how could it uninitialise?? i also realised my snake was not being properly initialised due to an off by one error, but this was easily fixable by changing the for loop.
+
+i then added all the bits of the vpos counter.
+
+![gtkwave](assets/gtkwave2.png)
+
+for some reason, the first bit isn't initialised in reset but all the others are.
+
+![gtkwave](assets/gtkwave3.png)
+
+zooming out, the x (uninitialised) then cascades down the bits of the 
