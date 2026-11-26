@@ -204,4 +204,36 @@ for some reason, the first bit isn't initialised in reset but all the others are
 
 ![gtkwave](assets/gtkwave3.png)
 
-zooming out, the x (uninitialised) then cascades down the bits of the 
+zooming out, the x (uninitialised) then cascades down the bits of the vpos counter register. this is because x + 1 is still x, so it all becomes x. 
+
+the reason it wasn't initialised though was very confusing to me. according to how logic works, it should have been fine and reset correctly and initialised correctly. 
+
+```v
+vmaxxed = (vpos == V_MAX) || reset
+
+hmaxxed = (hpos == H_MAX) || reset
+
+if(hmaxxed)
+  if (vmaxxed)
+    vpos <= 0;
+```
+
+meaning that if reset is true, vpos is set to 0 because hmaxxed is try and vmaxxed is true.
+
+WRONG
+
+here's what claude had to say, because by this point i was beyond it
+
+> In your code, reset is folded into hmaxxed and vmaxxed, so the reset path is "if (hpos is max OR reset), and if (vpos is max OR reset), then 0". Logically that still resets vpos, but synthesis doesn't see a clean reset in it. It sees counter logic and optimises it however it likes.
+> 
+> For bit 0 of a counter, the cheapest logic usually uses an XOR, something like "next bit = current bit XOR toggle". To force that bit to 0, the logic ends up computing something like vpos[0] XOR vpos[0]. On real silicon that's always 0, whatever vpos[0] holds. The simulator can't work that out: it only knows "x XOR x = x". So bit 0 stays x, and because each higher bit depends on the bits below it, the x spreads up one bit at a time. That's the staircase in your second screenshot.
+> 
+> hpos resets fine because its logic is simpler and synthesis happened to build it in a way that kills the x.
+
+so it would have worked on the chip, but not in the simulator.
+
+and all tests pass!!! yay!!!
+
+here's the final, good gate level simulation
+
+![yay gtkwave]("assets/gtkwave-final-happy.png")
