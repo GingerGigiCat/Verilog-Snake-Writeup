@@ -176,3 +176,8 @@ even though i got it to 92% at one point, it still failed with error "detailed p
 
 yes, eventually i got it down to around 67% (six seven)
 
+i then realised i was using = instead of <= in my clocked always logic. i don't really like <= because it looks like less than or equal to but it's actually how you update a register in a clocked always block.
+
+verilog doesn't like it when you leave registers uninitialised. easy fix right, just put an = after you initialise it right? wrong. in the always logic where you use it, you need a check to see if rst_n is 0, which is used to reset the logic and is done at startup to intialise values. if you don't do that, the logic fails as the unintialised values can't be used in operations because they are randomly 1 or 0, so tests fail. ok, so I added that to the clocked loop. but i have two always blocks, one triggered on the clock and one triggered on a bit of the counter. so i had to only put the reset logic on the ones where i'm using it, otherwise i get a multidriven error which is where a value is controlled by two different loops.
+
+you know that vga timings test i wrote that worked? well it didn't on github actions. in fact, it didn't even fail, it just got stuck for 6 hours and then timed out. after adding log messages, i found that 
