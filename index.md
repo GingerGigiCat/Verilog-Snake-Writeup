@@ -236,4 +236,4 @@ and all tests pass!!! yay!!!
 
 here's the final, good gate level simulation
 
-![yay gtkwave]("assets/gtkwave-final-happy.png")
+![yay gtkwave](assets/gtkwave-final-happy.png)
